@@ -1,5 +1,6 @@
 @echo off
 cls
+color b
 echo:
 echo              Dns Changer By ConfusedCharacter 
 echo                   github @ConfusedCharacter
@@ -8,15 +9,9 @@ echo 1-Change DNS
 echo 2-Reset DNS to Auto
 echo:
 
-echo -----------------------INFO-----------------------
 FOR /F "tokens=*" %%g IN ('powershell.exe -ExecutionPolicy Bypass -Command "Get-NetAdapter  * | Format-List -Property "Name" | findstr /R "Name""') do (SET VAR=%%g)
 echo Adapter %VAR%
-echo:
-
-echo Current DNS 
-powershell.exe -ExecutionPolicy Bypass -Command "Get-DnsClientServerAddress -AddressFamily IPv4 * | Format-List -Property "ServerAddresses" |findstr /R "ServerAddresses""
-echo:
-echo -----------------------END-----------------------
+powershell.exe -ExecutionPolicy Bypass -Command "$A = Get-DnsClientServerAddress -AddressFamily IPv4; $A = $A.ServerAddresses; \"Currnet DNS: \" + $A[0] + \" , \" + $A[1] "
 echo:
 
 set /p "option=Choose Option : "
@@ -43,9 +38,13 @@ if %option%==1 (
     Exit
 )
 echo:
-echo ---Testing DNS Connection---
-powershell.exe -ExecutionPolicy Bypass -Command "test-connection %dns1%,%dns2% -Count 1 | format-table ResponseTime"
-
+echo =====Testing DNSConnection=====
+rem powershell.exe -ExecutionPolicy Bypass -Command "test-connection %dns1%,%dns2% -Count 1 | format-table ResponseTime"
+CALL:pingtest1 %dns1%
+CALL:pingtest2 %dns2%
+echo [ %dns1% ] = [ %ms1% ]
+echo [ %dns2% ] = [ %ms2% ]
+echo ===============================
 netsh interface ipv4 set dnsservers "%adaptor%" static %dns1% primary
 netsh interface ip add dns "%adaptor%" %dns2% index=2
 ipconfig /flushdns
@@ -53,3 +52,14 @@ echo:
 echo DNS set Successfully.
 echo: 
 set /p "p=Press Any Key To Exit..."
+
+
+:pingtest1
+SET ms1= ERROR
+FOR /F "tokens=4 delims==" %%i IN ('ping -n 1 %1 ^| FIND "ms"') DO SET ms1=%%i
+GOTO:EOF
+
+:pingtest2
+SET ms2= ERROR
+FOR /F "tokens=4 delims==" %%i IN ('ping -n 1 %1 ^| FIND "ms"') DO SET ms2=%%i
+GOTO:EOF
