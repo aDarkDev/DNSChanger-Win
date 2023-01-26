@@ -1,6 +1,8 @@
 # DNSChanger-Win
 Batch File for Change Windows dns easy.
 
+![a](https://raw.githubusercontent.com/ConfusedCharacter/DNSChanger-Win/main/screenshot/1.png)
+
 ## New Update:
 
 * detecting adapter automatically
