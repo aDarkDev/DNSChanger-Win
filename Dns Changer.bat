@@ -2,8 +2,8 @@
 cls
 color b
 echo:
-echo              Dns Changer By ConfusedCharacter 
-echo                   github @ConfusedCharacter
+echo              Dns Changer By aDarkDev 
+echo                   github @aDarkDev
 echo:
 echo 1-Change DNS
 echo 2-Reset DNS to Auto
